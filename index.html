@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Santri - Tebak Huruf Hijaiyah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+        
+        .arabic-font {
+            font-family: 'Amiri', serif;
+        }
+        
+        .bounce-in {
+            animation: bounceIn 0.6s ease-out;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .pulse-green {
+            animation: pulseGreen 0.6s ease-in-out;
+        }
+        
+        @keyframes pulseGreen {
+            0% { background-color: rgb(34, 197, 94); transform: scale(1); }
+            50% { background-color: rgb(22, 163, 74); transform: scale(1.05); }
+            100% { background-color: rgb(34, 197, 94); transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 to-teal-100 min-h-screen font-['Inter']">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-6 sm:mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-2">🕌 Game Santri</h1>
+            <p class="text-emerald-600 text-base sm:text-lg px-4">Koleksi Game Edukatif untuk Santri</p>
+            
+            <!-- Overall Stats -->
+            <div id="overallStats" class="bg-white rounded-lg shadow-md p-4 mt-4 mx-4 sm:mx-0">
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <div class="text-lg sm:text-xl font-bold text-emerald-700" id="totalGames">0</div>
+                        <div class="text-xs sm:text-sm text-gray-600">Total Game</div>
+                    </div>
+                    <div>
+                        <div class="text-lg sm:text-xl font-bold text-blue-700" id="totalCorrect">0</div>
+                        <div class="text-xs sm:text-sm text-gray-600">Jawaban Benar</div>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-200">
+                    <button onclick="resetAllProgress()" class="group relative bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 hover:shadow-lg hover:scale-105 flex items-center gap-2 mx-auto">
+                        <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>Reset Progress</span>
+                        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 rounded-lg transition-opacity duration-300"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Selection Menu -->
+        <div id="gameMenu" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="startGame('hijaiyah')">
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">📚</div>
+                    <h3 class="text-lg sm:text-xl font-bold text-emerald-800 mb-2">Tebak Huruf Hijaiyah</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Pelajari 28 huruf Hijaiyah dengan cara yang menyenangkan</p>
+                    <div class="bg-emerald-100 text-emerald-700 px-3 sm:px-4 py-2 rounded-lg inline-block text-sm sm:text-base">
+                        Mulai Main
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="startGame('asmaul')">
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">🤲</div>
+                    <h3 class="text-lg sm:text-xl font-bold text-emerald-800 mb-2">Asmaul Husna</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Hafalkan 99 nama indah Allah SWT</p>
+                    <div class="bg-blue-100 text-blue-700 px-3 sm:px-4 py-2 rounded-lg inline-block text-sm sm:text-base">
+                        Mulai Main
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="startGame('doa')">
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">🤲</div>
+                    <h3 class="text-lg sm:text-xl font-bold text-emerald-800 mb-2">Doa Harian</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Pelajari doa-doa sehari-hari umat Islam</p>
+                    <div class="bg-purple-100 text-purple-700 px-3 sm:px-4 py-2 rounded-lg inline-block text-sm sm:text-base">
+                        Mulai Main
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="startGame('surat')">
+                <div class="text-center">
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">📖</div>
+                    <h3 class="text-lg sm:text-xl font-bold text-emerald-800 mb-2">Surat Pendek</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Hafalkan surat-surat pendek dalam Al-Quran</p>
+                    <div class="bg-amber-100 text-amber-700 px-3 sm:px-4 py-2 rounded-lg inline-block text-sm sm:text-base">
+                        Mulai Main
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Container -->
+        <div id="gameContainer" class="hidden">
+            <!-- Back Button -->
+            <div class="mb-6">
+                <button onclick="backToMenu()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                    ← Kembali ke Menu
+                </button>
+            </div>
+
+            <!-- Game Stats -->
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+                <div class="grid grid-cols-4 gap-2 sm:gap-4 text-center mb-4">
+                    <div class="bg-emerald-50 rounded-lg p-2 sm:p-3">
+                        <div class="text-lg sm:text-xl font-bold text-emerald-700" id="score">0</div>
+                        <div class="text-emerald-600 text-xs">Skor</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-2 sm:p-3">
+                        <div class="text-lg sm:text-xl font-bold text-blue-700" id="level">1</div>
+                        <div class="text-blue-600 text-xs">Level</div>
+                    </div>
+                    <div class="bg-amber-50 rounded-lg p-2 sm:p-3">
+                        <div class="text-lg sm:text-xl font-bold text-amber-700" id="streak">0</div>
+                        <div class="text-amber-600 text-xs">Berturut</div>
+                    </div>
+                    <div class="bg-red-50 rounded-lg p-2 sm:p-3">
+                        <div class="text-lg sm:text-xl font-bold text-red-700" id="timer">30</div>
+                        <div class="text-red-600 text-xs">Detik</div>
+                    </div>
+                </div>
+                
+                <!-- Combo Multiplier -->
+                <div class="text-center mb-3" id="comboDisplay" style="display: none;">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full inline-block text-sm font-bold">
+                        🔥 COMBO x<span id="comboMultiplier">1</span>
+                    </div>
+                </div>
+                
+                <!-- Power-ups -->
+                <div class="flex justify-center gap-2 sm:gap-4">
+                    <button onclick="useHint()" id="hintBtn" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                        💡 Hint (<span id="hintsLeft">3</span>)
+                    </button>
+                    <button onclick="useTimeBoost()" id="timeBoostBtn" class="bg-green-100 hover:bg-green-200 text-green-800 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                        ⏰ +10 Detik
+                    </button>
+                    <button onclick="useDoublePoints()" id="doublePointsBtn" class="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors">
+                        ⭐ 2x Poin
+                    </button>
+                </div>
+            </div>
+
+        <!-- Game Area -->
+        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6">
+            <div class="text-center mb-6 sm:mb-8">
+                <div class="text-4xl sm:text-6xl arabic-font mb-3 sm:mb-4 text-emerald-800" id="arabicLetter">ا</div>
+                <div class="text-base sm:text-lg text-gray-600 mb-4 sm:mb-6 px-2" id="question">Huruf apakah ini?</div>
+                
+                <!-- Answer Options -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto" id="options">
+                    <!-- Options will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs sm:text-sm text-gray-600">Progress Level</span>
+                <span class="text-xs sm:text-sm text-gray-600" id="progressText">0/5</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2 sm:h-3">
+                <div class="bg-emerald-500 h-2 sm:h-3 rounded-full transition-all duration-500" id="progressBar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div class="text-center px-4" id="feedback">
+            <div class="text-emerald-600 font-medium text-sm sm:text-base">Pilih jawaban yang benar!</div>
+        </div>
+        </div>
+
+        <!-- Achievement Modal -->
+        <div id="achievementModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-xl p-6 sm:p-8 max-w-sm w-full text-center bounce-in">
+                <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">🎉</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-emerald-800 mb-2">Level Naik!</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4" id="achievementText">Alhamdulillah! Anda naik ke level 2</p>
+                <button onclick="closeAchievement()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                    Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Secure Data Storage System
+        const STORAGE_KEY = 'santri_game_data_v2';
+        const ENCRYPTION_KEY = 'santri2024';
+        
+        // Sound effects (using Web Audio API for simple beeps)
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(frequency, duration, type = 'sine') {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        function playCorrectSound() {
+            playSound(523, 0.2); // C note
+            setTimeout(() => playSound(659, 0.2), 100); // E note
+            setTimeout(() => playSound(784, 0.3), 200); // G note
+        }
+        
+        function playWrongSound() {
+            playSound(200, 0.5, 'sawtooth');
+        }
+        
+        function playLevelUpSound() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => playSound(523 + (i * 100), 0.2), i * 100);
+            }
+        }
+        
+        // Simple encryption/decryption functions
+        function encryptData(data) {
+            try {
+                const jsonString = JSON.stringify(data);
+                let encrypted = '';
+                for (let i = 0; i < jsonString.length; i++) {
+                    encrypted += String.fromCharCode(
+                        jsonString.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length)
+                    );
+                }
+                return btoa(encrypted);
+            } catch (e) {
+                console.error('Encryption failed:', e);
+                return null;
+            }
+        }
+        
+        function decryptData(encryptedData) {
+            try {
+                const encrypted = atob(encryptedData);
+                let decrypted = '';
+                for (let i = 0; i < encrypted.length; i++) {
+                    decrypted += String.fromCharCode(
+                        encrypted.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length)
+                    );
+                }
+                return JSON.parse(decrypted);
+            } catch (e) {
+                console.error('Decryption failed:', e);
+                return null;
+            }
+        }
+        
+        // Default game progress structure
+        function getDefaultProgress() {
+            return {
+                hijaiyah: { bestScore: 0, bestLevel: 1, totalCorrect: 0, bestStreak: 0 },
+                asmaul: { bestScore: 0, bestLevel: 1, totalCorrect: 0, bestStreak: 0 },
+                doa: { bestScore: 0, bestLevel: 1, totalCorrect: 0, bestStreak: 0 },
+                surat: { bestScore: 0, bestLevel: 1, totalCorrect: 0, bestStreak: 0 },
+                lastPlayed: null,
+                totalGamesPlayed: 0
+            };
+        }
+        
+        // Load game progress from localStorage
+        function loadGameProgress() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (!stored) return getDefaultProgress();
+                
+                const decrypted = decryptData(stored);
+                if (!decrypted) return getDefaultProgress();
+                
+                // Validate data structure
+                const defaultProgress = getDefaultProgress();
+                const validatedProgress = { ...defaultProgress };
+                
+                // Validate each game's data
+                ['hijaiyah', 'asmaul', 'doa', 'surat'].forEach(game => {
+                    if (decrypted[game] && typeof decrypted[game] === 'object') {
+                        validatedProgress[game] = {
+                            bestScore: Math.max(0, parseInt(decrypted[game].bestScore) || 0),
+                            bestLevel: Math.max(1, parseInt(decrypted[game].bestLevel) || 1),
+                            totalCorrect: Math.max(0, parseInt(decrypted[game].totalCorrect) || 0),
+                            bestStreak: Math.max(0, parseInt(decrypted[game].bestStreak) || 0)
+                        };
+                    }
+                });
+                
+                validatedProgress.totalGamesPlayed = Math.max(0, parseInt(decrypted.totalGamesPlayed) || 0);
+                validatedProgress.lastPlayed = decrypted.lastPlayed;
+                
+                return validatedProgress;
+            } catch (e) {
+                console.error('Failed to load progress:', e);
+                return getDefaultProgress();
+            }
+        }
+        
+        // Save game progress to localStorage
+        function saveGameProgress(progress) {
+            try {
+                const encrypted = encryptData(progress);
+                if (encrypted) {
+                    localStorage.setItem(STORAGE_KEY, encrypted);
+                    return true;
+                }
+            } catch (e) {
+                console.error('Failed to save progress:', e);
+            }
+            return false;
+        }
+        
+        // Update progress for current game
+        function updateGameProgress(gameType, score, level, streak, correctAnswers) {
+            const progress = loadGameProgress();
+            const gameProgress = progress[gameType];
+            
+            // Update best records
+            gameProgress.bestScore = Math.max(gameProgress.bestScore, score);
+            gameProgress.bestLevel = Math.max(gameProgress.bestLevel, level);
+            gameProgress.bestStreak = Math.max(gameProgress.bestStreak, streak);
+            gameProgress.totalCorrect += correctAnswers;
+            
+            progress.lastPlayed = new Date().toISOString();
+            progress.totalGamesPlayed++;
+            
+            saveGameProgress(progress);
+            updateMenuStats();
+        }
+        
+        // Reset all progress
+        function resetAllProgress() {
+            showResetConfirmationModal();
+        }
+        
+        function showResetConfirmationModal() {
+            const modal = document.getElementById('achievementModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            modalContent.innerHTML = `
+                <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">⚠️</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-red-800 mb-2">Reset Progress?</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 px-2">Apakah Anda yakin ingin menghapus <strong>semua progress game</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                    <div class="text-red-700 text-sm font-medium mb-1">Yang akan dihapus:</div>
+                    <div class="text-red-600 text-xs space-y-1">
+                        <div>• Semua skor tertinggi</div>
+                        <div>• Level tertinggi yang dicapai</div>
+                        <div>• Total jawaban benar</div>
+                        <div>• Streak terbaik</div>
+                    </div>
+                </div>
+                <div class="flex gap-2 justify-center">
+                    <button onclick="confirmReset()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Ya, Hapus Semua
+                    </button>
+                    <button onclick="cancelReset()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                        Batal
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        function confirmReset() {
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+                
+                // Reset display immediately
+                document.getElementById('totalGames').textContent = '0';
+                document.getElementById('totalCorrect').textContent = '0';
+                
+                // Remove all game stats from cards
+                const gameCards = document.querySelectorAll('.game-stats');
+                gameCards.forEach(card => card.remove());
+                
+                updateMenuStats();
+                
+                // Show success message
+                const modal = document.getElementById('achievementModal');
+                const modalContent = modal.querySelector('.bg-white');
+                
+                modalContent.innerHTML = `
+                    <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">✅</div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-green-800 mb-2">Reset Berhasil!</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-4">Semua progress game telah dihapus. Anda bisa memulai perjalanan belajar dari awal lagi!</p>
+                    <button onclick="closeResetModal()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium transition-colors text-sm">
+                        Mulai Fresh!
+                    </button>
+                `;
+                
+            } catch (error) {
+                console.error('Error resetting progress:', error);
+                
+                // Show error message
+                const modal = document.getElementById('achievementModal');
+                const modalContent = modal.querySelector('.bg-white');
+                
+                modalContent.innerHTML = `
+                    <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">❌</div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-red-800 mb-2">Reset Gagal!</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-4">Terjadi kesalahan saat mereset progress. Silakan coba lagi.</p>
+                    <button onclick="closeResetModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors text-sm">
+                        Tutup
+                    </button>
+                `;
+            }
+        }
+        
+        function cancelReset() {
+            closeResetModal();
+        }
+        
+        function closeResetModal() {
+            document.getElementById('achievementModal').classList.add('hidden');
+            document.getElementById('achievementModal').classList.remove('flex');
+        }
+        
+        // Update menu with statistics
+        function updateMenuStats() {
+            const progress = loadGameProgress();
+            
+            // Update overall stats
+            let totalCorrectAnswers = 0;
+            ['hijaiyah', 'asmaul', 'doa', 'surat'].forEach(game => {
+                totalCorrectAnswers += progress[game].totalCorrect;
+            });
+            
+            document.getElementById('totalGames').textContent = progress.totalGamesPlayed;
+            document.getElementById('totalCorrect').textContent = totalCorrectAnswers;
+            
+            // Update each game card with stats
+            const games = ['hijaiyah', 'asmaul', 'doa', 'surat'];
+            games.forEach(game => {
+                const gameProgress = progress[game];
+                const gameCard = document.querySelector(`[onclick="startGame('${game}')"]`);
+                if (gameCard) {
+                    const existingStats = gameCard.querySelector('.game-stats');
+                    if (existingStats) existingStats.remove();
+                    
+                    if (gameProgress.bestScore > 0) {
+                        const statsDiv = document.createElement('div');
+                        statsDiv.className = 'game-stats text-xs text-gray-500 mt-2 border-t pt-2';
+                        statsDiv.innerHTML = `
+                            <div>Best: ${gameProgress.bestScore} pts (Lv.${gameProgress.bestLevel})</div>
+                            <div>Benar: ${gameProgress.totalCorrect} | Streak: ${gameProgress.bestStreak}</div>
+                        `;
+                        gameCard.querySelector('.text-center').appendChild(statsDiv);
+                    }
+                }
+            });
+        }
+
+        // Game Data
+        const gameData = {
+            hijaiyah: [
+                { arabic: 'ا', latin: 'Alif' },
+                { arabic: 'ب', latin: 'Ba' },
+                { arabic: 'ت', latin: 'Ta' },
+                { arabic: 'ث', latin: 'Tsa' },
+                { arabic: 'ج', latin: 'Jim' },
+                { arabic: 'ح', latin: 'Ha' },
+                { arabic: 'خ', latin: 'Kha' },
+                { arabic: 'د', latin: 'Dal' },
+                { arabic: 'ذ', latin: 'Dzal' },
+                { arabic: 'ر', latin: 'Ra' },
+                { arabic: 'ز', latin: 'Zai' },
+                { arabic: 'س', latin: 'Sin' },
+                { arabic: 'ش', latin: 'Syin' },
+                { arabic: 'ص', latin: 'Shad' },
+                { arabic: 'ض', latin: 'Dhad' },
+                { arabic: 'ط', latin: 'Tha' },
+                { arabic: 'ظ', latin: 'Zha' },
+                { arabic: 'ع', latin: 'Ain' },
+                { arabic: 'غ', latin: 'Ghain' },
+                { arabic: 'ف', latin: 'Fa' },
+                { arabic: 'ق', latin: 'Qaf' },
+                { arabic: 'ك', latin: 'Kaf' },
+                { arabic: 'ل', latin: 'Lam' },
+                { arabic: 'م', latin: 'Mim' },
+                { arabic: 'ن', latin: 'Nun' },
+                { arabic: 'ه', latin: 'Ha' },
+                { arabic: 'و', latin: 'Wau' },
+                { arabic: 'ي', latin: 'Ya' }
+            ],
+            asmaul: [
+                { arabic: 'الرَّحْمَنُ', latin: 'Ar-Rahman', meaning: 'Yang Maha Pengasih' },
+                { arabic: 'الرَّحِيمُ', latin: 'Ar-Rahim', meaning: 'Yang Maha Penyayang' },
+                { arabic: 'الْمَلِكُ', latin: 'Al-Malik', meaning: 'Yang Maha Merajai' },
+                { arabic: 'الْقُدُّوسُ', latin: 'Al-Quddus', meaning: 'Yang Maha Suci' },
+                { arabic: 'السَّلاَمُ', latin: 'As-Salam', meaning: 'Yang Maha Memberi Keselamatan' },
+                { arabic: 'الْمُؤْمِنُ', latin: 'Al-Mu\'min', meaning: 'Yang Maha Memberi Keamanan' },
+                { arabic: 'الْمُهَيْمِنُ', latin: 'Al-Muhaymin', meaning: 'Yang Maha Mengawasi' },
+                { arabic: 'الْعَزِيزُ', latin: 'Al-Aziz', meaning: 'Yang Maha Perkasa' },
+                { arabic: 'الْجَبَّارُ', latin: 'Al-Jabbar', meaning: 'Yang Maha Memaksa' },
+                { arabic: 'الْمُتَكَبِّرُ', latin: 'Al-Mutakabbir', meaning: 'Yang Maha Sombong' }
+            ],
+            doa: [
+                { arabic: 'بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ', latin: 'Bismillahir-rahmanir-rahim', meaning: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang', occasion: 'Sebelum makan' },
+                { arabic: 'الْحَمْدُ لِلّهِ رَبِّ الْعَالَمِيْنَ', latin: 'Alhamdulillahi rabbil-alamiin', meaning: 'Segala puji bagi Allah Tuhan semesta alam', occasion: 'Setelah makan' },
+                { arabic: 'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا', latin: 'Allahumma barik lana fima razaqtana', meaning: 'Ya Allah, berkahilah kami dalam rezeki yang Engkau berikan', occasion: 'Doa makan' },
+                { arabic: 'بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ', latin: 'Bismillahi tawakkaltu alallah', meaning: 'Dengan nama Allah, aku bertawakal kepada Allah', occasion: 'Keluar rumah' },
+                { arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ وَرَحْمَتِكَ', latin: 'Allahumma inni as\'aluka min fadlika wa rahmatika', meaning: 'Ya Allah, aku memohon kepada-Mu dari karunia dan rahmat-Mu', occasion: 'Masuk rumah' }
+            ],
+            surat: [
+                { name: 'Al-Fatihah', arabic: 'الْفَاتِحَة', meaning: 'Pembuka', ayat: 7 },
+                { name: 'Al-Ikhlas', arabic: 'الْإِخْلَاص', meaning: 'Memurnikan Keesaan Allah', ayat: 4 },
+                { name: 'Al-Falaq', arabic: 'الْفَلَق', meaning: 'Waktu Subuh', ayat: 5 },
+                { name: 'An-Nas', arabic: 'النَّاس', meaning: 'Manusia', ayat: 6 },
+                { name: 'Al-Kafirun', arabic: 'الْكَافِرُون', meaning: 'Orang-orang Kafir', ayat: 6 },
+                { name: 'An-Nasr', arabic: 'النَّصْر', meaning: 'Pertolongan', ayat: 3 },
+                { name: 'Al-Masad', arabic: 'الْمَسَد', meaning: 'Sabut', ayat: 5 },
+                { name: 'Al-Kautsar', arabic: 'الْكَوْثَر', meaning: 'Nikmat yang Banyak', ayat: 3 }
+            ]
+        };
+
+        let currentGame = '';
+        let currentData = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let level = 1;
+        let streak = 0;
+        let questionsInLevel = 0;
+        let correctAnswer = '';
+        let sessionCorrectAnswers = 0;
+        let gameStartTime = null;
+        let timeLeft = 30;
+        let timerInterval = null;
+        let comboMultiplier = 1;
+        let powerUpActive = false;
+        let hintsUsed = 0;
+        let maxHints = 3;
+
+        // Get questions per level based on current level
+        function getQuestionsPerLevel() {
+            return Math.min(5 + Math.floor(level / 3), 10); // Increase questions as level goes up
+        }
+        
+        // Get time limit based on level
+        function getTimeLimit() {
+            return Math.max(20, 35 - Math.floor(level / 2)); // Decrease time as level goes up
+        }
+
+        function startGame(gameType) {
+            currentGame = gameType;
+            currentData = gameData[gameType];
+            
+            // Reset game state
+            score = 0;
+            level = 1;
+            streak = 0;
+            questionsInLevel = 0;
+            sessionCorrectAnswers = 0;
+            gameStartTime = new Date();
+            timeLeft = getTimeLimit();
+            comboMultiplier = 1;
+            powerUpActive = false;
+            hintsUsed = 0;
+            
+            // Show game container, hide menu
+            document.getElementById('gameMenu').classList.add('hidden');
+            document.getElementById('gameContainer').classList.remove('hidden');
+            
+            // Start timer
+            startTimer();
+            
+            generateQuestion();
+            updateDisplay();
+        }
+        
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    gameOver();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = timeLeft;
+            
+            // Change color based on time left
+            if (timeLeft <= 5) {
+                timerElement.parentElement.className = 'bg-red-100 rounded-lg p-2 sm:p-3 animate-pulse';
+                timerElement.className = 'text-lg sm:text-xl font-bold text-red-700';
+            } else if (timeLeft <= 10) {
+                timerElement.parentElement.className = 'bg-orange-50 rounded-lg p-2 sm:p-3';
+                timerElement.className = 'text-lg sm:text-xl font-bold text-orange-700';
+            } else {
+                timerElement.parentElement.className = 'bg-red-50 rounded-lg p-2 sm:p-3';
+                timerElement.className = 'text-lg sm:text-xl font-bold text-red-700';
+            }
+        }
+        
+        function gameOver() {
+            clearInterval(timerInterval);
+            
+            // Save final progress
+            if (sessionCorrectAnswers > 0) {
+                updateGameProgress(currentGame, score, level, streak, sessionCorrectAnswers);
+            }
+            
+            // Show game over modal
+            showGameOverModal();
+        }
+        
+        function showGameOverModal() {
+            const modal = document.getElementById('achievementModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            modalContent.innerHTML = `
+                <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">⏰</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-red-800 mb-2">Waktu Habis!</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-2">Skor Akhir: ${score}</p>
+                <p class="text-sm sm:text-base text-gray-600 mb-4">Level: ${level} | Streak: ${streak}</p>
+                <div class="flex gap-2 justify-center">
+                    <button onclick="restartGame()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                        Main Lagi
+                    </button>
+                    <button onclick="closeGameOver()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                        Menu Utama
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+        
+        function restartGame() {
+            closeGameOver();
+            startGame(currentGame);
+        }
+        
+        function closeGameOver() {
+            document.getElementById('achievementModal').classList.add('hidden');
+            document.getElementById('achievementModal').classList.remove('flex');
+            backToMenu();
+        }
+
+        function backToMenu() {
+            // Clear timer
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Save progress before going back
+            if (currentGame && sessionCorrectAnswers > 0) {
+                updateGameProgress(currentGame, score, level, streak, sessionCorrectAnswers);
+            }
+            
+            document.getElementById('gameContainer').classList.add('hidden');
+            document.getElementById('gameMenu').classList.remove('hidden');
+        }
+        
+        // Power-up functions
+        function useHint() {
+            if (hintsUsed >= maxHints) {
+                alert('Hint sudah habis!');
+                return;
+            }
+            
+            hintsUsed++;
+            const buttons = document.querySelectorAll('#options button');
+            const wrongButtons = Array.from(buttons).filter(btn => btn.textContent !== correctAnswer);
+            
+            // Remove 2 wrong answers
+            for (let i = 0; i < 2 && i < wrongButtons.length; i++) {
+                wrongButtons[i].style.opacity = '0.3';
+                wrongButtons[i].disabled = true;
+            }
+            
+            updateDisplay();
+            playSound(400, 0.2);
+        }
+        
+        function useTimeBoost() {
+            if (timeLeft >= 60) {
+                alert('Waktu sudah maksimal!');
+                return;
+            }
+            
+            timeLeft += 10;
+            updateTimerDisplay();
+            
+            // Visual effect
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.add('bounce-in');
+            setTimeout(() => timerElement.classList.remove('bounce-in'), 600);
+            
+            playSound(600, 0.3);
+        }
+        
+        function useDoublePoints() {
+            if (powerUpActive) {
+                alert('Power-up sudah aktif!');
+                return;
+            }
+            
+            powerUpActive = true;
+            comboMultiplier = 2;
+            
+            // Show visual indicator
+            document.getElementById('comboDisplay').style.display = 'block';
+            document.getElementById('comboMultiplier').textContent = comboMultiplier;
+            
+            // Disable after 5 questions
+            setTimeout(() => {
+                powerUpActive = false;
+                comboMultiplier = 1;
+                document.getElementById('comboDisplay').style.display = 'none';
+            }, 30000); // 30 seconds
+            
+            playSound(800, 0.4);
+        }
+
+        function generateQuestion() {
+            // Check if all questions in current level are completed
+            if (questionsInLevel >= getQuestionsPerLevel()) {
+                levelUp();
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * currentData.length);
+            const correctItem = currentData[randomIndex];
+            
+            if (currentGame === 'hijaiyah') {
+                correctAnswer = correctItem.latin;
+                document.getElementById('arabicLetter').textContent = correctItem.arabic;
+                document.getElementById('question').textContent = 'Huruf apakah ini?';
+                
+                const options = [correctItem.latin];
+                while (options.length < 4) {
+                    const randomOption = currentData[Math.floor(Math.random() * currentData.length)].latin;
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                displayOptions(options);
+                
+            } else if (currentGame === 'asmaul') {
+                correctAnswer = correctItem.meaning;
+                document.getElementById('arabicLetter').textContent = correctItem.arabic;
+                document.getElementById('question').textContent = 'Apa arti dari Asmaul Husna ini?';
+                
+                const options = [correctItem.meaning];
+                while (options.length < 4) {
+                    const randomOption = currentData[Math.floor(Math.random() * currentData.length)].meaning;
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                displayOptions(options);
+                
+            } else if (currentGame === 'doa') {
+                correctAnswer = correctItem.occasion;
+                document.getElementById('arabicLetter').textContent = correctItem.arabic;
+                document.getElementById('question').textContent = 'Kapan doa ini dibaca?';
+                
+                const options = [correctItem.occasion];
+                while (options.length < 4) {
+                    const randomOption = currentData[Math.floor(Math.random() * currentData.length)].occasion;
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                displayOptions(options);
+                
+            } else if (currentGame === 'surat') {
+                correctAnswer = correctItem.meaning;
+                document.getElementById('arabicLetter').textContent = correctItem.arabic;
+                document.getElementById('question').textContent = 'Apa arti dari surat ini?';
+                
+                const options = [correctItem.meaning];
+                while (options.length < 4) {
+                    const randomOption = currentData[Math.floor(Math.random() * currentData.length)].meaning;
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                displayOptions(options);
+            }
+        }
+
+        function displayOptions(options) {
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+
+            // Display options
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800 py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 text-xs sm:text-sm';
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedAnswer, buttonElement) {
+            const allButtons = document.querySelectorAll('#options button');
+            allButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedAnswer === correctAnswer) {
+                // Correct answer
+                buttonElement.classList.add('pulse-green');
+                buttonElement.className = 'bg-green-500 text-white py-3 px-4 rounded-lg font-medium';
+                
+                // Calculate score with combo multiplier
+                const basePoints = 10 * level;
+                const bonusPoints = Math.floor(basePoints * (comboMultiplier - 1));
+                const timeBonus = timeLeft > 20 ? 5 : timeLeft > 10 ? 3 : 1;
+                const totalPoints = basePoints + bonusPoints + timeBonus;
+                
+                score += totalPoints;
+                streak++;
+                questionsInLevel++;
+                sessionCorrectAnswers++;
+                
+                // Update combo multiplier
+                if (streak >= 3 && !powerUpActive) {
+                    comboMultiplier = Math.min(3, 1 + Math.floor(streak / 3));
+                    document.getElementById('comboDisplay').style.display = 'block';
+                    document.getElementById('comboMultiplier').textContent = comboMultiplier;
+                }
+                
+                // Add time bonus for fast answers
+                if (timeLeft > 25) {
+                    timeLeft += 2;
+                }
+                
+                // Play success sound
+                playCorrectSound();
+                
+                // Show feedback with points
+                let feedbackText = '✅ Benar! Alhamdulillah';
+                if (bonusPoints > 0) feedbackText += ` (+${totalPoints} poin!)`;
+                if (timeBonus > 1) feedbackText += ` ⚡ Bonus Cepat!`;
+                
+                document.getElementById('feedback').innerHTML = 
+                    `<div class="text-green-600 font-medium text-sm sm:text-lg">${feedbackText}</div>`;
+                
+                // Auto-save progress every 5 correct answers
+                if (sessionCorrectAnswers % 5 === 0) {
+                    updateGameProgress(currentGame, score, level, streak, 5);
+                    sessionCorrectAnswers = 0; // Reset counter after saving
+                }
+                
+                // Level up is now handled automatically in generateQuestion()
+                
+            } else {
+                // Wrong answer
+                buttonElement.classList.add('shake');
+                buttonElement.className = 'bg-red-500 text-white py-3 px-4 rounded-lg font-medium';
+                
+                // Show correct answer
+                allButtons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.className = 'bg-green-500 text-white py-3 px-4 rounded-lg font-medium';
+                    }
+                });
+                
+                // Reset combo
+                streak = 0;
+                comboMultiplier = 1;
+                document.getElementById('comboDisplay').style.display = 'none';
+                
+                // Lose time penalty
+                timeLeft = Math.max(0, timeLeft - 3);
+                
+                // Play wrong sound
+                playWrongSound();
+                
+                document.getElementById('feedback').innerHTML = 
+                    '<div class="text-red-600 font-medium text-sm sm:text-lg">❌ Salah. Jawaban yang benar: ' + correctAnswer + '</div>';
+            }
+
+            updateDisplay();
+            
+            // Next question after delay
+            setTimeout(() => {
+                if (timeLeft > 0) {
+                    generateQuestion();
+                    document.getElementById('feedback').innerHTML = 
+                        '<div class="text-emerald-600 font-medium text-sm sm:text-base">Pilih jawaban yang benar!</div>';
+                }
+            }, 1500);
+        }
+
+        function levelUp() {
+            level++;
+            questionsInLevel = 0;
+            
+            // Reset time to new level's time limit + bonus
+            const newTimeLimit = getTimeLimit();
+            timeLeft = newTimeLimit + 10; // Bonus time for leveling up
+            
+            // Play level up sound
+            playLevelUpSound();
+            
+            const questionsNext = getQuestionsPerLevel();
+            const modal = document.getElementById('achievementModal');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            modalContent.innerHTML = `
+                <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">🎉</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-emerald-800 mb-2">Level ${level} Tercapai!</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-2">Alhamdulillah! Selamat naik level!</p>
+                <div class="bg-emerald-50 rounded-lg p-3 mb-4 text-sm">
+                    <div class="text-emerald-700 font-medium mb-1">Level ${level} - Tantangan Baru:</div>
+                    <div class="text-emerald-600">• ${questionsNext} soal per level</div>
+                    <div class="text-emerald-600">• Waktu: ${newTimeLimit} detik</div>
+                    <div class="text-emerald-600">• Bonus waktu: +10 detik</div>
+                </div>
+                <button onclick="closeAchievement()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base">
+                    Lanjut Level ${level}
+                </button>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAchievement() {
+            document.getElementById('achievementModal').classList.add('hidden');
+            document.getElementById('achievementModal').classList.remove('flex');
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score.toLocaleString();
+            document.getElementById('level').textContent = level;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('hintsLeft').textContent = maxHints - hintsUsed;
+            
+            // Update progress bar
+            const questionsNeeded = getQuestionsPerLevel();
+            const progress = (questionsInLevel / questionsNeeded) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = questionsInLevel + '/' + questionsNeeded;
+            
+            // Update power-up buttons
+            document.getElementById('hintBtn').disabled = hintsUsed >= maxHints;
+            document.getElementById('timeBoostBtn').disabled = timeLeft >= 60;
+            document.getElementById('doublePointsBtn').disabled = powerUpActive;
+            
+            // Update button styles based on availability
+            if (hintsUsed >= maxHints) {
+                document.getElementById('hintBtn').className = 'bg-gray-100 text-gray-400 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium cursor-not-allowed';
+            }
+            if (timeLeft >= 60) {
+                document.getElementById('timeBoostBtn').className = 'bg-gray-100 text-gray-400 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium cursor-not-allowed';
+            }
+            if (powerUpActive) {
+                document.getElementById('doublePointsBtn').className = 'bg-gray-100 text-gray-400 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium cursor-not-allowed';
+            }
+        }
+
+        // Initialize game on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMenuStats();
+        });
+        
+        // Also update stats when page becomes visible (for browser tab switching)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateMenuStats();
+            }
+        });
+        
+        // Initialize - show menu by default
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'976351b3511e8198',t:'MTc1NjM3ODk3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
